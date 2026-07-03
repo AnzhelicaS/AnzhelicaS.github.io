@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Атом знаний · Родитель</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0B1E3A, #0a1a2e 80%, #050f1a);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* основной макет родителя */
+        .dashboard {
+            width: 100%;
+            max-width: 1440px;
+            min-height: 820px;
+            background: rgba(11, 30, 58, 0.50);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 28px 32px 32px 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 210, 255, 0.15);
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 68px 1fr 280px;
+            grid-template-areas:
+                "header header header"
+                "sidebar main right"
+                "footer footer footer";
+            gap: 24px;
+            transition: all 0.2s;
+        }
+
+        /* ---------- ВЕРХНЯЯ ПАНЕЛЬ ---------- */
+        .top-panel {
+            grid-area: header;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background: rgba(10, 25, 47, 0.4);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            padding: 12px 24px 12px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: 0.04em;
+            text-shadow: 0 0 16px #00D2FF88;
+        }
+        .logo i {
+            font-size: 34px;
+            color: #00D2FF;
+            filter: drop-shadow(0 0 12px #00D2FF);
+        }
+        .logo span {
+            background: linear-gradient(135deg, #e0f0ff, #b0eaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -background-clip: text;
+        }
+
+        .role-switcher {
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+        .role-item {
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: #aac3e0;
+            font-weight: 500;
+            font-size: 15px;
+            transition: 0.3s ease;
+            cursor: default;
+            background: transparent;
+        }
+        .role-item.active {
+            background: rgba(0, 210, 255, 0.18);
+            color: #00D2FF;
+            box-shadow: 0 0 18px #00D2FF33, inset 0 0 8px #00D2FF22;
+            border: 1px solid #00D2FF55;
+            backdrop-filter: blur(4px);
+        }
+        .role-item:not(.active):hover {
+            background: rgba(0, 210, 255, 0.06);
+            color: #b8d8ff;
+        }
+
+        .top-icons {
+            display: flex;
+            gap: 20px;
+            color: #b0d4f0;
+            font-size: 22px;
+        }
+        .top-icons i {
+            transition: 0.2s;
+            cursor: default;
+            filter: drop-shadow(0 0 4px #00D2FF44);
+        }
+        .top-icons i:hover {
+            color: #00D2FF;
+            transform: scale(1.05);
+        }
+        .bell-wrap {
+            position: relative;
+        }
+        .bell-wrap .badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #ff3b3b;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 40px;
+            box-shadow: 0 0 14px #ff3b3baa;
+        }
+
+        /* ---------- ЛЕВАЯ ПАНЕЛЬ: ИНСТРУМЕНТЫ РОДИТЕЛЯ ---------- */
+        .left-sidebar {
+            grid-area: sidebar;
+            background: rgba(8, 22, 44, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+            border: 1px solid rgba(0, 210, 255, 0.08);
+        }
+        .nav-icon {
+            font-size: 28px;
+            color: #5886a8;
+            transition: 0.2s;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            cursor: default;
+            position: relative;
+        }
+        .nav-icon i {
+            filter: drop-shadow(0 0 2px #00D2FF22);
+        }
+        .nav-icon:hover {
+            color: #00D2FF;
+            background: rgba(0, 210, 255, 0.12);
+            box-shadow: 0 0 20px #00D2FF33;
+            transform: scale(1.02);
+        }
+        .nav-icon .badge-icon {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ff3b3b;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px #ff3b3baa;
+        }
+
+        /* ---------- ЦЕНТРАЛЬНЫЙ БЛОК: МОЙ РЕБЁНОК ---------- */
+        .main-area {
+            grid-area: main;
+            background: rgba(0, 15, 30, 0.25);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            border-radius: 40px;
+            padding: 22px 28px 28px 28px;
+            border: 1px solid rgba(0, 210, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+        }
+        .main-header h2 {
+            color: #FFD700;
+            font-weight: 500;
+            font-size: 28px;
+            letter-spacing: 0.04em;
+            text-shadow: 0 0 30px #FFD70044, 0 0 8px #ffd70022;
+        }
+        .main-header span {
+            color: #8bb8da;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid #00D2FF22;
+        }
+
+        /* ОДНА КРУПНАЯ КАРТОЧКА РЕБЁНКА */
+        .child-card {
+            background: rgba(20, 45, 72, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 28px 32px;
+            border: 1px solid rgba(0, 210, 255, 0.10);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 36px;
+            flex-wrap: wrap;
+            transition: 0.2s;
+            margin-bottom: 24px;
+        }
+        .child-card:hover {
+            border-color: #00D2FF44;
+            box-shadow: 0 0 40px #00D2FF22;
+        }
+
+        .child-avatar {
+            width: 92px;
+            height: 92px;
+            background: radial-gradient(circle at 30% 30%, #3c7a9e, #123350);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+            color: #b8e4ff;
+            box-shadow: 0 0 30px #00D2FF66;
+            border: 2px solid #00D2FF55;
+            flex-shrink: 0;
+        }
+
+        .child-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        .child-name {
+            font-size: 32px;
+            font-weight: 600;
+            color: #fff;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .child-name .status-badge {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px 16px 4px 12px;
+            border-radius: 40px;
+            font-weight: 400;
+        }
+        .child-name .status-badge .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 20px;
+            background: #42f581;
+            box-shadow: 0 0 20px #42f581aa;
+            animation: pulse-dot 1.8s infinite;
+            display: inline-block;
+        }
+        .child-name .status-badge .dot.yellow {
+            background: #f5c542;
+            box-shadow: 0 0 20px #f5c542aa;
+        }
+        .child-name .status-badge .dot.red {
+            background: #f54242;
+            box-shadow: 0 0 24px #f54242aa;
+            animation-duration: 0.9s;
+        }
+
+        .child-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            color: #b0d4f0;
+            font-size: 15px;
+        }
+        .stat-item strong {
+            color: #fff;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        .stat-item .highlight {
+            color: #00D2FF;
+        }
+
+        .progress-block {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 6px;
+            width: 100%;
+            max-width: 380px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background: #1a3750;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00D2FF, #7ae0ff);
+            border-radius: 20px;
+            box-shadow: 0 0 20px #00D2FF77;
+        }
+        .progress-label {
+            color: #c0def0;
+            font-size: 15px;
+            font-weight: 500;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        /* ГРАФИК НАСТРОЕНИЯ (смайлики за 7 дней) */
+        .mood-chart {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 28px;
+            padding: 18px 20px 14px 20px;
+            border: 1px solid rgba(0, 210, 255, 0.06);
+        }
+        .mood-chart h4 {
+            color: #b0d4f0;
+            font-weight: 400;
+            font-size: 15px;
+            margin-bottom: 12px;
+            letter-spacing: 0.04em;
+        }
+        .mood-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+        .mood-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #8bb8da;
+            font-size: 12px;
+        }
+        .mood-day .emoji {
+            font-size: 32px;
+            line-height: 1;
+            filter: drop-shadow(0 0 8px #FFD70033);
+            transition: 0.2s;
+        }
+        .mood-day .emoji:hover {
+            transform: scale(1.15);
+        }
+        .mood-day .day-label {
+            font-size: 11px;
+            color: #6a8aa0;
+        }
+
+        /* ---------- ПРАВАЯ ПАНЕЛЬ: ТРЕКЕРЫ ---------- */
+        .right-panel {
+            grid-area: right;
+            background: rgba(0, 15, 30, 0.3);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 24px 18px;
+            border: 1px solid rgba(0, 210, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .tracker-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 28px;
+            padding: 18px 16px 16px;
+            border: 1px solid rgba(0, 210, 255, 0.06);
+        }
+        .tracker-card h5 {
+            color: #b0d4f0;
+            font-weight: 400;
+            font-size: 14px;
+            letter-spacing: 0.03em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tracker-card h5 i {
+            color: #00D2FF99;
+        }
+
+        /* мини-графики (имитация) */
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 48px;
+            margin: 6px 0 4px;
+        }
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, #00D2FF, #0088aa);
+            border-radius: 6px 6px 0 0;
+            height: 0%;
+            min-height: 6px;
+            transition: 0.2s;
+            box-shadow: 0 0 12px #00D2FF33;
+        }
+        .bar.gold {
+            background: linear-gradient(180deg, #FFD700, #c9a800);
+            box-shadow: 0 0 12px #FFD70033;
+        }
+        .bar.green {
+            background: linear-gradient(180deg, #42f581, #1a9e4a);
+            box-shadow: 0 0 12px #42f58133;
+        }
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            color: #6a8aa0;
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        .activity-row {
+            display: flex;
+            justify-content: space-between;
+            color: #b0d4f0;
+            font-size: 14px;
+            padding: 4px 0;
+            border-bottom: 1px solid #00D2FF11;
+        }
+        .activity-row:last-child {
+            border-bottom: none;
+        }
+        .activity-row .value {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* ---------- НИЖНЯЯ ПАНЕЛЬ: БЫСТРЫЕ ДЕЙСТВИЯ ---------- */
+        .footer-widgets {
+            grid-area: footer;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            background: rgba(0, 15, 30, 0.2);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 14px 24px;
+            border: 1px solid rgba(0, 210, 255, 0.05);
+        }
+
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #b0d4f0;
+            font-weight: 500;
+            font-size: 15px;
+            padding: 10px 16px;
+            border-radius: 60px;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0, 210, 255, 0.08);
+            transition: 0.2s;
+            cursor: default;
+        }
+        .footer-btn i {
+            font-size: 22px;
+            color: #00D2FF99;
+        }
+        .footer-btn:hover {
+            background: rgba(0, 210, 255, 0.06);
+            border-color: #00D2FF44;
+            box-shadow: 0 0 30px #00D2FF11;
+        }
+        .footer-btn.gold-btn {
+            background: #FFD700;
+            color: #0B1E3A;
+            border-color: #FFD700;
+            box-shadow: 0 0 30px #FFD70044;
+        }
+        .footer-btn.gold-btn i {
+            color: #0B1E3A;
+        }
+        .footer-btn.gold-btn:hover {
+            box-shadow: 0 0 50px #FFD70066;
+        }
+
+        /* анимации */
+        @keyframes pulse-dot {
+            0% {
+                opacity: 0.5;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 0.5;
+                transform: scale(0.9);
+            }
+        }
+
+        /* адаптивность */
+        @media (max-width: 1100px) {
+            .dashboard {
+                grid-template-columns: 56px 1fr 230px;
+                padding: 20px;
+            }
+            .child-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        @media (max-width: 820px) {
+            .dashboard {
+                grid-template-areas:
+                    "header"
+                    "sidebar"
+                    "main"
+                    "right"
+                    "footer";
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .left-sidebar {
+                flex-direction: row;
+                justify-content: center;
+                padding: 12px;
+            }
+            .footer-widgets {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .top-panel {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .child-stats {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .mood-row {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        .clickable-area {
+            cursor: default;
+            transition: 0.1s;
+        }
+        .clickable-area:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+
+        <!-- Верхняя панель -->
+        <header class="top-panel">
+            <div class="logo">
+                <i class="fas fa-atom"></i>
+                <span>АТОМ ЗНАНИЙ</span>
+            </div>
+            <div class="top-icons">
+                <div class="bell-wrap"><i class="fas fa-bell"></i><span class="badge">2</span></div>
+                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-cog"></i>
+            </div>
+        </header>
+
+        <!-- Левая панель: инструменты родителя -->
+        <nav class="left-sidebar">
+            <div class="nav-icon"><i class="fas fa-comments"></i></div>
+            <div class="nav-icon"><i class="fas fa-envelope"></i><span class="badge-icon">1</span></div>
+            <div class="nav-icon"><i class="fas fa-hand-holding-heart"></i></div>
+        </nav>
+
+        <!-- Центральный блок: Мой ребёнок -->
+        <main class="main-area">
+            <div class="main-header">
+                <h2>🌟 Мой ребёнок</h2>
+                <span><i class="fas fa-sync-alt" style="margin-right:6px;"></i>обновлено сегодня</span>
+            </div>
+
+            <!-- ОДНА КРУПНАЯ КАРТОЧКА -->
+            <div class="child-card">
+                <div class="child-avatar">
+                    <i class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="child-info">
+                    <div class="child-name">
+                        Данил П.
+                        <span class="status-badge">
+                            <span class="dot green"></span> Всё хорошо
+                        </span>
+                    </div>
+                    <div class="child-stats">
+                        <span class="stat-item">📊 Выполнение <strong class="highlight">78%</strong></span>
+                        <span class="stat-item">🎯 Миссий за неделю <strong>6</strong> / 10</span>
+                        <span class="stat-item">⭐ Всего миссий <strong>42</strong></span>
+                    </div>
+                    <div class="progress-block">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:78%"></div>
+                        </div>
+                        <span class="progress-label">78%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- График настроения за 7 дней -->
+            <div class="mood-chart">
+                <h4><i class="far fa-smile" style="margin-right:8px; color:#FFD700;"></i>Настроение за неделю</h4>
+                <div class="mood-row">
+                    <div class="mood-day"><span class="emoji">😊</span><span class="day-label">Пн</span></div>
+                    <div class="mood-day"><span class="emoji">😐</span><span class="day-label">Вт</span></div>
+                    <div class="mood-day"><span class="emoji">😊</span><span class="day-label">Ср</span></div>
+                    <div class="mood-day"><span class="emoji">😢</span><span class="day-label">Чт</span></div>
+                    <div class="mood-day"><span class="emoji">😊</span><span class="day-label">Пт</span></div>
+                    <div class="mood-day"><span class="emoji">😐</span><span class="day-label">Сб</span></div>
+                    <div class="mood-day"><span class="emoji">😊</span><span class="day-label">Вс</span></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Правая панель: трекеры состояния -->
+        <aside class="right-panel">
+            <!-- Академический трекер -->
+            <div class="tracker-card">
+                <h5><i class="fas fa-chart-line"></i> Академический трекер</h5>
+                <div class="mini-chart">
+                    <div class="bar" style="height:60%"></div>
+                    <div class="bar" style="height:30%"></div>
+                    <div class="bar" style="height:75%"></div>
+                    <div class="bar" style="height:45%"></div>
+                    <div class="bar" style="height:90%"></div>
+                    <div class="bar" style="height:55%"></div>
+                    <div class="bar" style="height:70%"></div>
+                </div>
+                <div class="bar-label">
+                    <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+                </div>
+            </div>
+
+            <!-- Эмоциональный трекер -->
+            <div class="tracker-card">
+                <h5><i class="far fa-smile" style="color:#FFD700;"></i> Эмоциональный трекер</h5>
+                <div class="mini-chart">
+                    <div class="bar green" style="height:70%"></div>
+                    <div class="bar gold" style="height:40%"></div>
+                    <div class="bar green" style="height:80%"></div>
+                    <div class="bar" style="height:20%; background:#f54242; box-shadow:0 0 12px #f5424266;"></div>
+                    <div class="bar green" style="height:85%"></div>
+                    <div class="bar gold" style="height:50%"></div>
+                    <div class="bar green" style="height:75%"></div>
+                </div>
+                <div class="bar-label">
+                    <span>😊</span><span>😐</span><span>😊</span><span>😢</span><span>😊</span><span>😐</span><span>😊</span>
+                </div>
+            </div>
+
+            <!-- Активность -->
+            <div class="tracker-card">
+                <h5><i class="fas fa-clock"></i> Активность</h5>
+                <div class="activity-row"><span>Пн</span><span class="value">1.2 ч</span></div>
+                <div class="activity-row"><span>Вт</span><span class="value">0.8 ч</span></div>
+                <div class="activity-row"><span>Ср</span><span class="value">1.5 ч</span></div>
+                <div class="activity-row"><span>Чт</span><span class="value">0.5 ч</span></div>
+                <div class="activity-row"><span>Пт</span><span class="value">2.0 ч</span></div>
+                <div class="activity-row" style="border-bottom:none; font-weight:500; color:#fff;"><span>Всего за неделю</span><span class="value">6.0 ч</span></div>
+            </div>
+        </aside>
+
+        <!-- Нижняя панель: быстрые действия -->
+        <footer class="footer-widgets">
+            <div class="footer-btn clickable-area"><i class="fas fa-file-pdf"></i> Скачать отчёт</div>
+            <div class="footer-btn gold-btn clickable-area"><i class="fas fa-pen"></i> Написать тьютору</div>
+            <div class="footer-btn clickable-area"><i class="fas fa-question-circle"></i> Помощь</div>
+        </footer>
+
+    </div>
+</body>
+</html>

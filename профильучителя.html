@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨‍🏫 Профиль тьютора — Атом знаний</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ============================================================
+           ГЛОБАЛЬНЫЕ СТИЛИ
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0B1E3A, #050f1a);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ----- АНИМАЦИИ ----- */
+        @keyframes twinkle {
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 50px rgba(0, 210, 255, 0.4);
+            }
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes pulse-gold {
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            }
+            50% {
+                transform: scale(1.03);
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+            }
+        }
+
+        /* ============================================================
+           ЗВЁЗДЫ (фон)
+           ============================================================ */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        /* ============================================================
+           ОСНОВНОЙ КОНТЕЙНЕР
+           ============================================================ */
+        .profile-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(11, 30, 58, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 48px;
+            padding: 24px 32px 32px;
+            border: 1px solid rgba(0, 210, 255, 0.08);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* ============================================================
+           НАВИГАЦИОННАЯ ПАНЕЛЬ
+           ============================================================ */
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 210, 255, 0.06);
+            margin-bottom: 20px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 0.04em;
+            text-shadow: 0 0 16px #00D2FF88;
+            margin-right: 12px;
+        }
+        .nav-logo i {
+            font-size: 26px;
+            color: #00D2FF;
+            filter: drop-shadow(0 0 12px #00D2FF);
+        }
+        .nav-logo span {
+            background: linear-gradient(135deg, #e0f0ff, #b0eaff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 210, 255, 0.08);
+            background: rgba(0, 0, 0, 0.2);
+            color: #b0d4f0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-btn:hover {
+            background: rgba(0, 210, 255, 0.06);
+            border-color: rgba(0, 210, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .nav-btn i {
+            font-size: 16px;
+            color: #00D2FF99;
+        }
+        .nav-btn.active {
+            background: rgba(0, 210, 255, 0.12);
+            border-color: #00D2FF55;
+            color: #00D2FF;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.08);
+        }
+        .nav-btn.active i {
+            color: #00D2FF;
+        }
+        .nav-btn.gold {
+            border-color: #FFD70033;
+            color: #FFD700;
+        }
+        .nav-btn.gold i {
+            color: #FFD70099;
+        }
+        .nav-btn.gold:hover {
+            background: rgba(255, 215, 0, 0.06);
+            border-color: #FFD70055;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-right .coins-small {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 6px 14px 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #FFD70033;
+            color: #FFD700;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-right .level-small {
+            background: rgba(0, 210, 255, 0.08);
+            padding: 6px 14px 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #00D2FF33;
+            color: #00D2FF;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============================================================
+           ЗАГОЛОВОК ПРОФИЛЯ
+           ============================================================ */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 210, 255, 0.06);
+            margin-bottom: 24px;
+        }
+
+        .profile-header .title {
+            color: #FFD700;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile-header .title i {
+            color: #00D2FF;
+        }
+
+        .profile-header .sub-info {
+            color: #b0d4f0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .profile-header .sub-info .badge {
+            background: rgba(0, 210, 255, 0.08);
+            padding: 4px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 210, 255, 0.1);
+        }
+
+        /* ============================================================
+           ОСНОВНОЙ КОНТЕНТ
+           ============================================================ */
+        .profile-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* ----- АВАТАР ----- */
+        .avatar-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .avatar-big {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #3c7a9e, #0a2a44);
+            border: 3px solid rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            color: #b8e4ff;
+            transition: 0.3s;
+            position: relative;
+        }
+        .avatar-big:hover {
+            box-shadow: 0 0 80px rgba(0, 210, 255, 0.3);
+            transform: scale(1.02);
+        }
+        .avatar-big .level-badge {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            background: #FFD700;
+            color: #0B1E3A;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 2px 14px;
+            border-radius: 40px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .avatar-section .role-tag {
+            color: #00D2FF;
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(0, 210, 255, 0.08);
+            padding: 4px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 210, 255, 0.1);
+        }
+
+        /* ----- ИНФОРМАЦИЯ ----- */
+        .info-section {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .info-section .name-title {
+            font-size: 30px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+        .info-section .name-title .status {
+            font-size: 14px;
+            font-weight: 400;
+            color: #42f581;
+            background: rgba(66, 245, 129, 0.1);
+            padding: 2px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(66, 245, 129, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .info-section .name-title .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #42f581;
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .info-section .sub-title {
+            color: #8bb8da;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* ----- СТАТИСТИКА ----- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 16px 0 20px;
+        }
+        .stat-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 210, 255, 0.05);
+            text-align: center;
+            transition: 0.3s;
+        }
+        .stat-card:hover {
+            border-color: rgba(0, 210, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .stat-card .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: #8bb8da;
+            margin-top: 2px;
+        }
+        .stat-card .stat-icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .stat-card.gold {
+            border-color: #FFD70033;
+            background: rgba(255, 215, 0, 0.04);
+        }
+        .stat-card.gold .stat-value {
+            color: #FFD700;
+        }
+        .stat-card.cyan {
+            border-color: #00D2FF33;
+            background: rgba(0, 210, 255, 0.04);
+        }
+        .stat-card.cyan .stat-value {
+            color: #00D2FF;
+        }
+
+        /* ----- КНОПКА СОЗДАТЬ РЕЙД ----- */
+        .raid-section {
+            margin-top: 8px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 215, 0, 0.06);
+        }
+
+        .raid-section .raid-title {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .raid-section .raid-title i {
+            font-size: 22px;
+        }
+
+        .raid-section .raid-desc {
+            color: #b0d4f0;
+            font-size: 14px;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .raid-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .raid-controls select {
+            padding: 10px 18px;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 210, 255, 0.1);
+            color: #b0d4f0;
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+            min-width: 140px;
+            transition: 0.3s;
+        }
+        .raid-controls select:hover {
+            border-color: rgba(0, 210, 255, 0.2);
+        }
+        .raid-controls select option {
+            background: #0B1E3A;
+            color: #b0d4f0;
+        }
+
+        .raid-controls .create-raid-btn {
+            padding: 10px 32px;
+            border-radius: 40px;
+            border: none;
+            background: linear-gradient(135deg, #FFD700, #f0b800);
+            color: #0B1E3A;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .raid-controls .create-raid-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+        }
+        .raid-controls .create-raid-btn:active {
+            transform: scale(0.95);
+        }
+        .raid-controls .create-raid-btn i {
+            font-size: 18px;
+        }
+
+        /* ============================================================
+           АДАПТИВНОСТЬ
+           ============================================================ */
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 16px;
+                border-radius: 32px;
+            }
+            .nav-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .nav-left {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .nav-right {
+                justify-content: center;
+            }
+            .nav-btn {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .nav-btn i {
+                font-size: 14px;
+            }
+            .nav-logo {
+                font-size: 15px;
+            }
+            .nav-logo i {
+                font-size: 20px;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .profile-header .title {
+                font-size: 18px;
+                justify-content: center;
+            }
+            .profile-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .avatar-big {
+                width: 130px;
+                height: 130px;
+                font-size: 56px;
+            }
+            .info-section .name-title {
+                font-size: 24px;
+                justify-content: center;
+                text-align: center;
+            }
+            .info-section .sub-title {
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .raid-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .raid-controls select {
+                min-width: auto;
+            }
+            .raid-controls .create-raid-btn {
+                justify-content: center;
+            }
+            .nav-right .coins-small,
+            .nav-right .level-small {
+                font-size: 11px;
+                padding: 4px 10px 4px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-container {
+                padding: 12px;
+                border-radius: 24px;
+            }
+            .nav-left {
+                gap: 4px;
+            }
+            .nav-btn {
+                padding: 4px 10px;
+                font-size: 10px;
+                gap: 4px;
+            }
+            .nav-btn i {
+                font-size: 12px;
+            }
+            .nav-logo {
+                font-size: 13px;
+                margin-right: 6px;
+            }
+            .nav-logo i {
+                font-size: 16px;
+            }
+            .profile-header .title {
+                font-size: 16px;
+            }
+            .avatar-big {
+                width: 110px;
+                height: 110px;
+                font-size: 44px;
+            }
+            .info-section .name-title {
+                font-size: 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card .stat-value {
+                font-size: 18px;
+            }
+            .raid-section {
+                padding: 14px;
+            }
+            .raid-section .raid-title {
+                font-size: 16px;
+            }
+            .raid-controls .create-raid-btn {
+                font-size: 14px;
+                padding: 8px 20px;
+            }
+            .nav-right .coins-small,
+            .nav-right .level-small {
+                font-size: 10px;
+                padding: 3px 8px 3px 6px;
+            }
+        }
+
+        /* ============================================================
+           УТИЛИТЫ
+           ============================================================ */
+        .hidden {
+            display: none !important;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-gold {
+            color: #FFD700;
+        }
+        .text-cyan {
+            color: #00D2FF;
+        }
+        .text-white {
+            color: #fff;
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .flex {
+            display: flex;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ЗВЁЗДЫ (фон) -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <!-- ============================================================
+    ПРОФИЛЬ ТЬЮТОРА
+    ============================================================ -->
+    <div class="profile-container">
+
+        <!-- ===== НАВИГАЦИОННАЯ ПАНЕЛЬ ===== -->
+        <div class="nav-bar">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <i class="fas fa-atom"></i>
+                    <span>Атом знаний</span>
+                </div>
+                <button class="nav-btn" onclick="window.location.href='Атомзнаний1.html'">
+                    <i class="fas fa-chalkboard-teacher"></i> Доска
+                </button>
+                <button class="nav-btn" onclick="goToLibrary()">
+                    <i class="fas fa-book"></i> Библиотека
+                </button>
+                <button class="nav-btn gold" onclick="goToCheatsheets()">
+                    <i class="fas fa-lightbulb"></i> Шпаргалки
+                </button>
+                <button class="nav-btn active" onclick="goToProfile()">
+                    <i class="fas fa-user-cog"></i> Профиль
+                </button>
+            </div>
+            <div class="nav-right">
+                <span class="coins-small"><i class="fas fa-coins"></i> 256</span>
+                <span class="level-small"><i class="fas fa-star"></i> Lv.12</span>
+            </div>
+        </div>
+
+        <!-- ===== ЗАГОЛОВОК ===== -->
+        <div class="profile-header">
+            <div class="title">
+                <i class="fas fa-user-tie"></i> Профиль тьютора
+            </div>
+            <div class="sub-info">
+                <span class="badge"><i class="fas fa-users"></i> 12 учеников</span>
+                <span class="badge"><i class="fas fa-trophy" style="color:#FFD700;"></i> Опыт: 7 лет</span>
+            </div>
+        </div>
+
+        <!-- ===== ОСНОВНОЙ КОНТЕНТ ===== -->
+        <div class="profile-content">
+
+            <!-- АВАТАР -->
+            <div class="avatar-section">
+                <div class="avatar-big">
+                    👨‍🏫
+                    <span class="level-badge">⭐ Lv.12</span>
+                </div>
+                <span class="role-tag"><i class="fas fa-graduation-cap"></i> Тьютор</span>
+            </div>
+
+            <!-- ИНФОРМАЦИЯ -->
+            <div class="info-section">
+                <div class="name-title">
+                    Александр Иванович
+                    <span class="status">
+                        <span class="dot"></span> В сети
+                    </span>
+                </div>
+                <div class="sub-title">
+                    <i class="fas fa-map-pin" style="color:#00D2FF;"></i> Школа №5 · Класс 5А, 5Б
+                </div>
+
+                <!-- СТАТИСТИКА -->
+                <div class="stats-grid">
+                    <div class="stat-card gold">
+                        <span class="stat-icon">🏆</span>
+                        <div class="stat-value">47</div>
+                        <div class="stat-label">Всего миссий</div>
+                    </div>
+                    <div class="stat-card cyan">
+                        <span class="stat-icon">⭐</span>
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Зон завершено</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">👥</span>
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Учеников</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📊</span>
+                        <div class="stat-value">76%</div>
+                        <div class="stat-label">Средний прогресс</div>
+                    </div>
+                </div>
+
+                <!-- ==== СОЗДАТЬ РЕЙД ==== -->
+                <div class="raid-section">
+                    <div class="raid-title">
+                        <i class="fas fa-flag"></i> Создать командный рейд
+                    </div>
+                    <div class="raid-desc">
+                        Выбери миссию и сложность, чтобы организовать совместное прохождение для учеников.
+                    </div>
+
+                    <div class="raid-controls">
+                        <select id="raidMission">
+                            <option value="math">🏝️ Остров Математики</option>
+                            <option value="history">🌿 Джунгли Истории</option>
+                            <option value="russian">🌊 Океан Русского языка</option>
+                            <option value="chemistry">🧪 Лаборатория Химии</option>
+                            <option value="physics">🪐 Космос Физики</option>
+                            <option value="secret">🌟 Секретная планета</option>
+                        </select>
+
+                        <select id="raidDifficulty">
+                            <option value="easy">🟢 Лёгкая</option>
+                            <option value="medium" selected>🟡 Средняя</option>
+                            <option value="hard">🔴 Сложная</option>
+                            <option value="expert">💀 Экспертная</option>
+                        </select>
+
+                        <button class="create-raid-btn" onclick="createRaid()">
+                            <i class="fas fa-rocket"></i> Создать рейд
+                        </button>
+                    </div>
+
+                    <div id="raidResult" style="margin-top:12px;color:#b0d4f0;font-size:14px;display:none;padding:12px 16px;background:rgba(0,0,0,0.15);border-radius:16px;border-left:3px solid #FFD700;">
+                        <!-- Сюда будет выводиться результат -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // ============================================================
+        // 1. ЗВЁЗДЫ
+        // ============================================================
+        function createStars() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 80; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // ============================================================
+        // 2. НАВИГАЦИЯ
+        // ============================================================
+        function goToDashboard() {
+            alert('👨‍🏫 Переход на доску тьютора\n\nЗдесь ты видишь всех своих учеников.');
+        }
+
+        function goToLibrary() {
+            alert('📚 Библиотека материалов\n\nЗдесь собраны все учебные материалы, методички и ресурсы.');
+        }
+
+        function goToCheatsheets() {
+            alert('📝 Шпаргалки\n\nБыстрый доступ к основным формулам, правилам и памяткам для учеников.');
+        }
+
+        function goToProfile() {
+            alert('👤 Ты уже в профиле!');
+        }
+
+        // ============================================================
+        // 3. СОЗДАНИЕ РЕЙДА
+        // ============================================================
+        function createRaid() {
+            const missionSelect = document.getElementById('raidMission');
+            const difficultySelect = document.getElementById('raidDifficulty');
+            const resultDiv = document.getElementById('raidResult');
+
+            const mission = missionSelect.options[missionSelect.selectedIndex];
+            const difficulty = difficultySelect.options[difficultySelect.selectedIndex];
+
+            const missionNames = {
+                math: 'Остров Математики',
+                history: 'Джунгли Истории',
+                russian: 'Океан Русского языка',
+                chemistry: 'Лаборатория Химии',
+                physics: 'Космос Физики',
+                secret: 'Секретная планета'
+            };
+
+            const difficultyIcons = {
+                easy: '🟢',
+                medium: '🟡',
+                hard: '🔴',
+                expert: '💀'
+            };
+
+            const difficultyDescriptions = {
+                easy: 'Лёгкая — 3 миссии, простые задания',
+                medium: 'Средняя — 5 миссий, задания средней сложности',
+                hard: 'Сложная — 7 миссий, сложные задания',
+                expert: 'Экспертная — 10 миссий, самые сложные задания'
+            };
+
+            const missionEmojis = {
+                math: '🏝️',
+                history: '🌿',
+                russian: '🌊',
+                chemistry: '🧪',
+                physics: '🪐',
+                secret: '🌟'
+            };
+
+            // Случайные напарники
+            const teammates = ['Миша Р.', 'Алина К.', 'Данил П.', 'Вера С.', 'Артём Л.'];
+            const selectedTeammates = [];
+            const numTeammates = Math.floor(Math.random() * 3) + 2;
+            const shuffled = [...teammates].sort(() => Math.random() - 0.5);
+            for (let i = 0; i < Math.min(numTeammates, shuffled.length); i++) {
+                selectedTeammates.push(shuffled[i]);
+            }
+
+            // Количество миссий в зависимости от сложности
+            const missionCounts = { easy: 3, medium: 5, hard: 7, expert: 10 };
+            const count = missionCounts[difficulty.value] || 5;
+
+            // Награда
+            const rewards = { easy: 20, medium: 35, hard: 50, expert: 75 };
+            const reward = rewards[difficulty.value] || 35;
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                    <span style="font-size:24px;">${difficultyIcons[difficulty.value]}</span>
+                    <span style="font-weight:600;color:#fff;">Рейд создан!</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:13px;">
+                    <span>📍 Зона:</span>
+                    <span style="color:#fff;">${missionEmojis[mission.value]} ${missionNames[mission.value]}</span>
+                    <span>📊 Сложность:</span>
+                    <span style="color:#fff;">${difficulty.text} (${count} миссий)</span>
+                    <span>👥 Участники:</span>
+                    <span style="color:#fff;">${selectedTeammates.join(', ')}</span>
+                    <span>🎁 Награда:</span>
+                    <span style="color:#FFD700;">${reward} 🪙 каждому</span>
+                </div>
+                <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,210,255,0.06);font-size:12px;color:#8bb8da;">
+                    ${difficultyDescriptions[difficulty.value]}
+                </div>
+                <div style="margin-top:8px;display:flex;gap:8px;">
+                    <button onclick="startRaid()" style="padding:6px 20px;border-radius:40px;border:none;background:#00D2FF;color:#0B1E3A;font-weight:600;cursor:pointer;transition:0.3s;">
+                        🚀 Начать рейд
+                    </button>
+                    <button onclick="closeRaidResult()" style="padding:6px 20px;border-radius:40px;border:1px solid rgba(0,210,255,0.1);background:rgba(0,0,0,0.2);color:#b0d4f0;cursor:pointer;">
+                        Закрыть
+                    </button>
+                </div>
+            `;
+
+            // Анимация
+            resultDiv.style.animation = 'none';
+            setTimeout(() => {
+                resultDiv.style.animation = 'slideIn 0.3s ease-out';
+            }, 10);
+        }
+
+        function startRaid() {
+            alert('🚀 Рейд начался!\n\nУченики получили приглашения. Миссия запущена!');
+        }
+
+        function closeRaidResult() {
+            document.getElementById('raidResult').style.display = 'none';
+        }
+
+        // ============================================================
+        // 4. ИНИЦИАЛИЗАЦИЯ
+        // ============================================================
+        createStars();
+
+        console.log('👨‍🏫 Профиль тьютора загружен!');
+        console.log('📊 Статистика: 12 учеников, 47 миссий, 8 зон');
+        console.log('🎯 Готов к созданию рейдов!');
+    </script>
+
+</body>
+</html>
